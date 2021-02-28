@@ -1,9 +1,10 @@
 import scala.collection.mutable.ListBuffer
+import scala.io.Source
 
 trait CsvReader {
 
   def parse(file: String): List[LineItem] = {
-    val bufferedSource = io.Source.fromFile(file)
+    val bufferedSource = Source.fromFile(file)
     val items : ListBuffer[LineItem] = ListBuffer[LineItem]()
     for (line <- bufferedSource.getLines()) {
       if (!line.contains("Date")) { // skip the header line
