@@ -3,6 +3,8 @@
 object BudgetProgram extends CsvReader {
   val neal = "Neal-"
   val lil = "Lil-"
+  val nealPercentage = .61
+  val lilPercentage = .39
   def main(args: Array[String]): Unit = {
 
     val janItems = parse("transactions-jan-20.csv")
@@ -20,12 +22,26 @@ object BudgetProgram extends CsvReader {
       .filter( x => !x.category.toLowerCase.contains("investments"))//handle reimbursements
       .filter( x => !x.category.toLowerCase.contains("Dividend & Cap Gains".toLowerCase())) //Dividend & Cap Gains
 
-    println(s"Total Income ${income.map(x => x.amount).sum}")
-    println(s"Neal Income ${personsItems(income, neal)}")
-    println(s"Lil Income ${personsItems(income, lil)}")
-    println(s"Total Spending ${spending.map(x => x.amount).sum}")
-    println(s"Neal Spending ${personsItems(spending, neal)}")
-    println(s"Lil Spending ${personsItems(spending, lil)}")
+    val nealSpending = personsItems(spending, neal)
+    val nealIncome = personsItems(income, neal)
+    val lilSpending =personsItems(spending, lil)
+    val lilIncome = personsItems(income, lil)
+    val totalIncome =income.map(x => x.amount).sum
+    val totalSpending = spending.map(x => x.amount).sum
+    println(s"Total Income ${totalIncome}")
+    println(s"Neal Income ${nealIncome}")
+    println(s"Lil Income ${lilIncome}")
+    println(s"Total Spending ${totalSpending}")
+    println(s"Neal Spending ${nealSpending}")
+    println(s"Lil Spending ${lilSpending}")
+    println(s"Bears Net ${totalIncome + totalSpending}")
+
+    println(s"Lil Spending should be ${totalSpending * lilPercentage}")
+    println(s"Neal Spending should be ${totalSpending * nealPercentage}")
+    println(s"Lil Spending adjustment ${-(totalSpending * lilPercentage - lilSpending) }")
+    println(s"Neal Spending adjustment  ${-(totalSpending * nealPercentage - nealSpending)}")
+
+    println(spending.filter(x => x.accountName.startsWith("Lil-")).map(x => x.amount))
   }
 
 
